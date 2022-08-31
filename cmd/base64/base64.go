@@ -11,23 +11,6 @@ import (
 	"strings"
 )
 
-// ./base64					:: waits for manual input at stdin, encodes
-// ./base64 file/path		:: encodes file
-// ./base64 < file/path		:: encodes file
-// ./base64 <<< "hi"		:: encodes text
-// echo hi | ./base64		:: encodes text
-// ./base64 -w2 file/path	:: encodes file at wrapbreak
-// ./base64 -w2 < file/path	:: encodes file at wrapbreak
-// ./base64 -w2 <<< "hi"	:: encodes text at wrapbreak
-// echo hi | ./base64 -w2	:: encodes text at wrapbreak
-// ./base64 -h				:: shows help
-// ./base64 -d				:: decode with no file and no stdin, wait for manual input
-// ./base64 -d file/path	:: read stdin decode base64 into plaintext
-// ./base64 -d < file/path	:: read stdin decode base64 into plaintext
-// ./base64 -d <<< "=="		:: read stdin decode base64 into plaintext
-// echo == | ./base64 -d	:: read stdin decode base64 into plaintext
-// ./base64 -w3				:: set wrapbreak at 3 (default 65)
-
 func main() {
 	err := cli()
 	if err != nil {
@@ -36,9 +19,9 @@ func main() {
 }
 
 func cli() error {
-	args := struct{
-		wrap int
-		help bool
+	args := struct {
+		wrap   int
+		help   bool
 		decode bool
 	}{}
 
@@ -55,7 +38,7 @@ func cli() error {
 		return nil
 	}
 	p := flag.Args()
-	r := (*os.File)(nil)
+	r := (io.Reader)(nil)
 	if len(p) == 0 || p[0] == `-` {
 		r = os.Stdin
 	}
@@ -65,7 +48,6 @@ func cli() error {
 		if err != nil {
 			return err
 		}
-		defer r.Close()
 	}
 	if args.decode {
 		return decode(r)
@@ -79,15 +61,15 @@ func encode(r io.Reader, wrap int) error {
 		return err
 	}
 	s := base64.StdEncoding.EncodeToString(b)
-	o := []string{}
-	for i := 0 ; i < len(s) ; i += wrap {
+	w := []string{}
+	for i := 0; i < len(s); i += wrap {
 		if i+wrap < len(s) {
-			o = append(o, s[i:(i+wrap)])
+			w = append(w, s[i:(i+wrap)])
 		} else {
-			o = append(o, s[i:])
+			w = append(w, s[i:])
 		}
 	}
-	fmt.Println(strings.Join(o, "\n"))
+	fmt.Println(strings.Join(w, "\n"))
 	return nil
 }
 
