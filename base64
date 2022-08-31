@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -e
+
+exec go run cmd/base64/base64.go "${@}"
