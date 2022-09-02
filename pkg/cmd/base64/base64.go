@@ -40,16 +40,23 @@ func ExecuteCommand() error {
 			return err
 		}
 	}
-	out := ""
 	if args.decode {
-		out, err = base64.DecodeReaderString(r)
-		if err != nil {
-			return err
-		}
-		fmt.Print(out)
-		return nil
+		return decode(r)
 	}
-	out, err = base64.EncodeReaderString(r, args.wrap)
+	return encode(r, args.wrap)
+}
+
+func decode(r io.Reader) error {
+	out, err := base64.DecodeReaderString(r)
+	if err != nil {
+		return err
+	}
+	fmt.Print(out)
+	return nil
+}
+
+func encode(r io.Reader, wrap int) error {
+	out, err := base64.EncodeReaderString(r, wrap)
 	if err != nil {
 		return err
 	}

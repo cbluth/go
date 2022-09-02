@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	err := cmd.Base64()
+	err := cmd.Cat()
 	if err != nil {
 		log.Fatalln(err)
 	}

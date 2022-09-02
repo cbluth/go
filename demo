@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -e
+
+COMMAND="${1}" ; shift
+
+COMMANDS=(
+    "base64"
+    "cat"
+)
+
+if [[ ! "${COMMANDS[*]}" =~ "${COMMAND}" ]] ; then
+    echo "error: command ${COMMAND} not available"
+    echo
+    echo "Usage: ./demo <COMMAND>"
+    echo "Commands:"
+    printf "    %s\n" "${COMMANDS[@]}"
+    exit 1
+fi
+
+exec go run cmd/${COMMAND}/${COMMAND}.go "${@}"
