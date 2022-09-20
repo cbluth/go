@@ -6,6 +6,7 @@ COMMAND="${1}" ; shift
 COMMANDS=(
     "base64"
     "cat"
+    "uuid"
 )
 
 if [[ ! "${COMMANDS[*]}" =~ "${COMMAND}" ]] ; then
