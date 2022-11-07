@@ -13,6 +13,9 @@ func EncodeReaderString(r io.Reader, wrap int) (string, error) {
 		return "", err
 	}
 	s := base64.StdEncoding.EncodeToString(b)
+	if wrap == 0 {
+		return s, nil
+	}
 	w := []string{}
 	for i := 0; i < len(s); i += wrap {
 		if i+wrap < len(s) {

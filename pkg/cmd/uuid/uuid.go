@@ -8,7 +8,9 @@ import (
 
 func ExecuteCommand() error {
 	u, err := uuid.New()
-	if err != nil {return err}
+	if err != nil {
+		return err
+	}
 	fmt.Println(u.String())
 	return nil
 }

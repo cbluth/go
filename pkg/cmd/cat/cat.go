@@ -3,7 +3,6 @@ package cat
 import (
 	"io"
 	"os"
-
 )
 
 func ExecuteCommand() error {
