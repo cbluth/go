@@ -23,7 +23,7 @@ type (
 func NewMachine(privateKey ed25519.PrivateKey) Machine {
 	return &machine{
 		PrivateKey: privateKey,
-		PublicKey: privateKey.Public().(ed25519.PublicKey),
+		PublicKey:  privateKey.Public().(ed25519.PublicKey),
 	}
 }
 

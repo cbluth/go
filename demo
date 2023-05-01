@@ -7,6 +7,7 @@ COMMANDS=(
     "base64"
     "cat"
     "uuid"
+    "ping"
 )
 
 if [[ ! "${COMMANDS[*]}" =~ "${COMMAND}" ]] ; then

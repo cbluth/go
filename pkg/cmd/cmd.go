@@ -3,6 +3,7 @@ package cmd
 import (
 	"github.com/cbluth/go/pkg/cmd/base64"
 	"github.com/cbluth/go/pkg/cmd/cat"
+	"github.com/cbluth/go/pkg/cmd/ping"
 	"github.com/cbluth/go/pkg/cmd/uuid"
 )
 
@@ -16,4 +17,8 @@ func Cat() error {
 
 func UUID() error {
 	return uuid.ExecuteCommand()
+}
+
+func Ping() error {
+	return ping.ExecuteCommand()
 }
