@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"encoding/base64"
+	"math"
 
 	// "log"
 	"sort"
@@ -46,8 +47,8 @@ func New() Tree {
 }
 
 func (ks keys) Less(i, j int) bool {
-	ki, kj := Key(*ks[i]), Key(*ks[j])
-	return bytes.Compare(ki[:], kj[:]) == -1
+	a, b := Key(*ks[i]), Key(*ks[j])
+	return bytes.Compare(a[:], b[:]) == -1
 }
 
 func (ks keys) Swap(i, j int) {
@@ -65,7 +66,7 @@ func (t *tree) Add(k Key) {
 	}
 	t.i[k] = struct{}{}
 	t.keys = append(t.keys, &k)
-	sort.Sort(keys(t.keys))
+	sort.Stable(t.keys)
 }
 
 func (t *tree) Remove(k Key) {
@@ -84,53 +85,91 @@ func (t *tree) Remove(k Key) {
 	}
 }
 
-func (t *tree) buildTree() Key {
-	t.m.RLock()
-	defer t.m.RUnlock()
-	t.depth = 0
-	return buildTree(t, t.keys)
-}
-
-func buildTree(t *tree, p keys) Key {
+func buildTree(p keys) Key {
 	l := len(p)
-	if l == 0 {
+	switch l {
+	case 0:
 		return Key{}
+	case 1:
+		return *p[0]
 	}
 	row := keys{}
-	padded := false
-	for i := 0; i < l; i += 2 {
-		var left, right int = i, i + 1
+	padded := l%2 != 0
+	for i := 0 ; i < l ; i +=2 {
+		pl, pr := i, i + 1
 		k := Key{}
-		if i+1 == l {
-			k = sha256.Sum256(p[left][:])
-			padded = true
+		if i+1 == l && padded {
+			k = sha256.Sum256(p[pl][:])
 		} else {
 			k = sha256.Sum256(
-				append(p[left][:],p[right][:]...),
+				append(p[pl][:],p[pr][:]...),
 			)
 		}
 		row = append(row, (*Key)(&k))
-		if padded {
+		switch l {
+		case 1, 2:
 			return k
 		}
 	}
-	t.depth++
-	return buildTree(t, row)
+	return buildTree(row)
 }
 
+// func (t *tree) buildTree() Key {
+// 	t.m.Lock()
+// 	defer t.m.Unlock()
+// 	t.depth = 0
+// 	return buildTree(t, t.keys)
+// }
+
+// func buildTree(t *tree, p keys) Key {
+// 	l := len(p)
+// 	if l == 0 {
+// 		return Key{}
+// 	}
+// 	row := keys{}
+// 	padded := false
+// 	for i := 0; i < l; i += 2 {
+// 		var left, right int = i, i + 1
+// 		k := Key{}
+// 		if i+1 == l {
+// 			k = sha256.Sum256(p[left][:])
+// 			padded = true
+// 		} else {
+// 			k = sha256.Sum256(
+// 				append(p[left][:],p[right][:]...),
+// 			)
+// 		}
+// 		row = append(row, (*Key)(&k))
+// 		if padded {
+// 			return k
+// 		}
+// 	}
+// 	t.depth++
+// 	return buildTree(t, row)
+// }
+
 func (t *tree) Root() Key {
-	return t.buildTree()
+	t.m.RLock()
+	defer t.m.RUnlock()
+	// return t.buildTree()
+	return buildTree(t.keys)
 }
 
 func (t *tree) Len() int {
+	t.m.RLock()
+	defer t.m.RUnlock()
 	return len(t.keys)
 }
 
 func (t *tree) Depth() int {
 	t.m.RLock()
 	defer t.m.RUnlock()
-	t.buildTree()
-	return t.depth
+	l := len(t.keys)
+	switch l {
+	case 0, 1, 2:
+		return l
+	}
+	return int(math.Ceil(math.Log2(float64(l)))) + 1
 }
 
 func (t *tree) Keys() []*Key {

@@ -25,19 +25,24 @@ var (
 		sha256.Sum256([]byte("k11")), //
 		sha256.Sum256([]byte("k12")), //
 	}
+	r0 = decodeBase64Panic("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=")
+	r1 Key = sha256.Sum256([]byte("k1"))
+	r2 Key = sha256.Sum256(
+		append(testKeys[0][:], testKeys[1][:]...),
+	)
 	rootKeys []Key = []Key{
-		decodeBase64Panic("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+		// decodeBase64Panic("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="),
 		decodeBase64Panic("Zh7sxdGkMxeNjM+0tKEWeZlRBFjhZlzy93kFx/KkCmc="),
 		decodeBase64Panic("q4g7ifVbu7TfWVZPYaNJtiM8XrcMMBuLhiTiOPrKw00="),
 		decodeBase64Panic("8Z4eZVEFFhY+BYDU/hXMxx1kZW0oMVYC424VFUIEoVQ="),
-		decodeBase64Panic("weSQezz9BjmQTNJgKLsKMQU9AKP2noLOc55XpQfI8Uk="),
-		decodeBase64Panic("x+mSwqeUPGABcrICYs+mUy2Ule7/bI0W4qq5Rhxd/g4="),
-		decodeBase64Panic("kPV9EqQt2jfOb1j3KbtUKB4AJs5MOfxNsb9nnF7IX2k="),
-		decodeBase64Panic("Zh7sxdGkMxeNjM+0tKEWeZlRBFjhZlzy93kFx/KkCmc="),
-		decodeBase64Panic("Zh7sxdGkMxeNjM+0tKEWeZlRBFjhZlzy93kFx/KkCmc="),
-		decodeBase64Panic("Zh7sxdGkMxeNjM+0tKEWeZlRBFjhZlzy93kFx/KkCmc="),
-		decodeBase64Panic("Zh7sxdGkMxeNjM+0tKEWeZlRBFjhZlzy93kFx/KkCmc="),
-		decodeBase64Panic("Zh7sxdGkMxeNjM+0tKEWeZlRBFjhZlzy93kFx/KkCmc="),
+		// decodeBase64Panic("weSQezz9BjmQTNJgKLsKMQU9AKP2noLOc55XpQfI8Uk="),
+		// decodeBase64Panic("x+mSwqeUPGABcrICYs+mUy2Ule7/bI0W4qq5Rhxd/g4="),
+		// decodeBase64Panic("kPV9EqQt2jfOb1j3KbtUKB4AJs5MOfxNsb9nnF7IX2k="),
+		// decodeBase64Panic("Zh7sxdGkMxeNjM+0tKEWeZlRBFjhZlzy93kFx/KkCmc="),
+		// decodeBase64Panic("Zh7sxdGkMxeNjM+0tKEWeZlRBFjhZlzy93kFx/KkCmc="),
+		// decodeBase64Panic("Zh7sxdGkMxeNjM+0tKEWeZlRBFjhZlzy93kFx/KkCmc="),
+		// decodeBase64Panic("Zh7sxdGkMxeNjM+0tKEWeZlRBFjhZlzy93kFx/KkCmc="),
+		// decodeBase64Panic("Zh7sxdGkMxeNjM+0tKEWeZlRBFjhZlzy93kFx/KkCmc="),
 	}
 )
 
@@ -83,22 +88,70 @@ func TestAddRemove(t *testing.T) {
 
 func TestRoots(t *testing.T) {
 	m := New()
-	// r := m.Root()
-	// if r != r0 {
-	// 	t.Errorf("expecting root %v, is %v", r1.String(), r.String())
-	// }
-	for i := range testKeys {
-		r := m.Root()
-		if r != rootKeys[i] {
-			t.Errorf("expecting root %v, is %v", rootKeys[i].String(), r.String())
-		}
-		m.Add(testKeys[i])
+	r := m.Root()
+	if r != r0 {
+		t.Errorf("expecting root %v, is %v", r0.String(), r.String())
 	}
+	m.Add(testKeys[0])
+	r = m.Root()
+	if r != r1 {
+		t.Errorf(": expecting root %v, is %v", r1.String(), r.String())
+	}
+	m.Add(testKeys[1])
+	r = m.Root()
+	if r != r2 {
+		t.Errorf(": expecting root %v, is %v", r2.String(), r.String())
+	}
+	// for i, k := range testKeys {
+	// 	m.Add(k)
+	// 	r := m.Root()
+	// 	if r != rootKeys[i] {
+	// 		t.Errorf("%v: expecting root %v, is %v",i, rootKeys[i].String(), r.String())
+	// 	}
+	// }
 	// m.Add(testKeys[0])
 	// r = m.Root()
 	// if r != r1 {
 	// 	t.Errorf("expecting root %v, is %v", r1.String(), r.String())
 	// }
+}
+
+func TestDepth(t *testing.T) {
+	m := New()
+	// 0 keys
+	if i := 0 ; m.Depth() != i {
+		t.Errorf("expecting depth %v, is %v, len %v", i, m.Depth(), m.Len())
+	}
+	// 1 key
+	m.Add(testKeys[0])
+	if i := 1 ; m.Depth() != i {
+		t.Errorf("expecting depth %v, is %v, len %v", i, m.Depth(), m.Len())
+	}
+	// 2 keys
+	m.Add(testKeys[1])
+	if i := 2 ; m.Depth() != i {
+		t.Errorf("expecting depth %v, is %v, len %v", i, m.Depth(), m.Len())
+	}
+	// 3 keys
+	m.Add(testKeys[2])
+	if i := 3 ; m.Depth() != i {
+		t.Errorf("expecting depth %v, is %v, len %v", i, m.Depth(), m.Len())
+	}
+	// 4 keys
+	m.Add(testKeys[3])
+	if i := 3 ; m.Depth() != i {
+		t.Errorf("expecting depth %v, is %v, len %v", i, m.Depth(), m.Len())
+	}
+	// 5 keys
+	m.Add(testKeys[4])
+	if i := 4 ; m.Depth() != i {
+		t.Errorf("expecting depth %v, is %v, len %v", i, m.Depth(), m.Len())
+	}
+	// 6 keys
+	m.Add(testKeys[5])
+	if i := 4 ; m.Depth() != i {
+		t.Errorf("expecting depth %v, is %v, len %v", i, m.Depth(), m.Len())
+	}
 }
 
 func decodeBase64Panic(s string) Key {
@@ -110,3 +163,9 @@ func decodeBase64Panic(s string) Key {
 	copy(k[:], b)
 	return k
 }
+
+// func calculateK1K2Root() Key {
+// 	k := sha256.Sum256(
+// 		append(testKeys[0][:], testKeys[1][:]...),
+// 	)
+// }
