@@ -1,0 +1,16 @@
+# mtls - the mtls toolkit
+---
+
+
+./mtls
+./mtls -h
+./mtls --help
+./mtls --listen tls://:8099 --forward tcp://1.2.3.4:8098    :: mtls listener on port 8099
+./mtls --listen tcp://:8089 --forward tls://2.3.4.5:8088    :: tcp listener on port 8089
+
+MTLS_CA_SECRET="r3411yl0ngs3cr3t"
+MTLS_ADD_TRUST="$(base64 < cert.pem),$(base64 < cert2.pem)"
+
+
+openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -sha256 -days 3650 -nodes -subj '/CN=""'
+

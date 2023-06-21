@@ -30,7 +30,7 @@ type (
 		Keys() []*Key
 	}
 	tree struct {
-		depth int
+		// depth int
 		keys keys
 		m    sync.RWMutex
 		i    map[Key]struct{}

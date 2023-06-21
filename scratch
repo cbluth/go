@@ -1,0 +1,62 @@
+# notes
+---
+lru w/generics:
+- https://github.com/ad/lru
+- https://github.com/dboslee/lru
+- https://github.com/electricbubble/lru
+- https://github.com/Code-Hex/go-generics-cache
+- https://github.com/kubernetes/utils/tree/master/lru
+
+shell:
+- https://github.com/mvdan/sh
+
+busybox:
+- https://github.com/surma/gobox
+- https://github.com/shirou/toybox
+- https://github.com/u-root/gobusybox
+- https://github.com/nao1215/mimixbox
+- https://github.com/skx/sysbox (shell completion)
+
+p2p:
+- https://github.com/Kh4n/quic-holepunch
+- https://github.com/Fattouche/FileFleet
+- https://github.com/marcboeker/tentacle
+- https://github.com/binwiederhier/natter
+- https://tailscale.com/blog/how-nat-traversal-works/
+
+fun:
+- https://github.com/ariary/tacos
+- https://ninenines.eu/docs/en/cowboy/2.6/guide/rest_principles/
+- "Algorithms To Live By"
+- https://github.com/hackerschoice/gsocket
+
+
+
+auth:
+- https://github.com/pilinux/gorest
+
+
+---
+https://github.com/bjornaer/CRDT/blob/main/crdt.go
+
+lru: https://github.com/zyedidia/generic/blob/master/cache/cache.go
+
+
+
+2^0 = 1
+2^1 = 2
+2^2 = 4
+2^3 = 4
+
+
+merkle:
+https://en.wikipedia.org/wiki/Merkle_tree
+https://prathamudeshmukh.github.io/merkle-tree-demo/
+https://github.com/cbergoon/merkletree/blob/master/merkle_tree.go
+https://github.com/wealdtech/go-merkletree/blob/master/merkletree.go
+https://github.com/ComposableFi/go-merkle-trees/blob/main/merkle/tree.go
+https://aly.arriqaaq.com/merkle-tree-and-verifiable-data-structures/
+https://github.com/keybase/go-merkle-tree/blob/master/tree.go
+https://github.com/txaty/go-merkletree/blob/main/merkle_tree.go
+https://reinkrul.nl/blog/go/golang/merkle/tree/2020/05/21/golang-merkle-tree.html
+
